@@ -3,10 +3,10 @@ import random
 
 # Константы для конфигурации
 DB_NAME = "database.db"
-WEAPONS_COUNT = 20
-HULLS_COUNT = 5
-ENGINES_COUNT = 6
-SHIPS_COUNT = 200
+weapons_count = 20
+hulls_count = 5
+engines_count = 6
+ships_count = 200
 RANDOM_RANGE = (1, 20)
 
 

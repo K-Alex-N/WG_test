@@ -37,17 +37,7 @@ CREATE TABLE IF NOT EXISTS engines (
 """)
 
 # Create ships table
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS ships (
-    ship TEXT PRIMARY KEY,
-    weapon TEXT,
-    hull TEXT,
-    engine TEXT,
-    FOREIGN KEY (weapon) REFERENCES weapons(weapon),
-    FOREIGN KEY (hull) REFERENCES hulls(hull),
-    FOREIGN KEY (engine) REFERENCES engines(engine)
-)
-""")
+cursor.execute()
 
 # Commit changes and close connection
 conn.commit()
