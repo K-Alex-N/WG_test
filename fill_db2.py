@@ -68,17 +68,25 @@ def generate_ships_data():
     ]
 
 
-def main():
+# def main():
+def fill_db():
     # Подключение к базе данных
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
     try:
+        # # Вставка данных в таблицу weapons
+        # cursor.executemany("""
+        #     INSERT INTO weapons (weapon, reload_speed, rotational_speed, diameter, power_volley, count)
+        #     VALUES (?, ?, ?, ?, ?, ?)
+        # """, generate_weapons_data())
+
         # Вставка данных в таблицу weapons
-        cursor.executemany("""
+        sql = """
             INSERT INTO weapons (weapon, reload_speed, rotational_speed, diameter, power_volley, count)
             VALUES (?, ?, ?, ?, ?, ?)
-        """, generate_weapons_data())
+        """
+        cursor.executemany(sql, generate_weapons_data())
 
         # Вставка данных в таблицу hulls
         cursor.executemany("""
@@ -103,12 +111,13 @@ def main():
         print("База данных успешно заполнена.")
 
     except sqlite3.Error as e:
-        print(f"Произошла ошибка: {e}")
+        # logging.info("Database populated successfully.")
+        # print(f"Произошла ошибка: {e}")
         conn.rollback()
 
     finally:
         conn.close()
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     fill_db()
