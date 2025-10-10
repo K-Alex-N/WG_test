@@ -70,8 +70,9 @@ def randomize_ships(cursor):
 @pytest.fixture(scope='session')
 def changed_db():
     tmp_db_name = copy_db()
-    conn = conn_db(tmp_db_name)
-    cursor = conn.cursor()
+    # conn = conn_db(tmp_db_name)
+    with conn_db(tmp_db_name) as conn:
+        cursor = conn.cursor()
 
-    randomize_ships(cursor)
-    # randomize_components(cursor)
+        randomize_ships(cursor)
+        # randomize_components(cursor)

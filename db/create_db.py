@@ -10,7 +10,7 @@ def create_db():
             diameter INTEGER,
             power_volley INTEGER,
             count INTEGER
-        )
+        );
         """
     create_db_hulls = """
         CREATE TABLE IF NOT EXISTS hulls (
@@ -18,7 +18,7 @@ def create_db():
             armor INTEGER,
             type INTEGER,
             capacity INTEGER
-        )
+        );
         """
 
     create_db_engines = """
@@ -26,7 +26,7 @@ def create_db():
         engine TEXT PRIMARY KEY,
         power INTEGER,
         type INTEGER
-    )
+    );
     """
     create_db_ships = """
         CREATE TABLE IF NOT EXISTS ships (
@@ -37,16 +37,17 @@ def create_db():
             FOREIGN KEY (weapon) REFERENCES weapons(weapon),
             FOREIGN KEY (hull) REFERENCES hulls(hull),
             FOREIGN KEY (engine) REFERENCES engines(engine)
-        )
+        );
         """
-    conn = conn_db()
-    cursor = conn.cursor()
 
-    cursor.execute(create_db_weapons)
-    cursor.execute(create_db_hulls)
-    cursor.execute(create_db_engines)
-    cursor.execute(create_db_ships)
+    with conn_db() as conn:
+        cursor = conn.cursor()
 
-    conn.commit()
+        cursor.execute(create_db_weapons)
+        cursor.execute(create_db_hulls)
+        cursor.execute(create_db_engines)
+        cursor.execute(create_db_ships)
+
+        conn.commit()
 
     # logging.info("Databases created successfully.")
