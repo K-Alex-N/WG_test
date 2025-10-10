@@ -1,4 +1,4 @@
-﻿from db.init_db import cursor, connect
+﻿from db.init_db import cursor, conn
 
 
 def create_db():
@@ -45,6 +45,6 @@ def create_db():
     cursor.execute(create_db_engines)
     cursor.execute(create_db_ships)
 
-    connect.commit()
+    conn.commit()
 
     # logging.info("Databases created successfully.")
