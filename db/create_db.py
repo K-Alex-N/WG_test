@@ -1,4 +1,4 @@
-﻿from db.init_db import cursor, conn
+﻿from db.conn_db import conn_db
 
 
 def create_db():
@@ -39,6 +39,8 @@ def create_db():
             FOREIGN KEY (engine) REFERENCES engines(engine)
         )
         """
+    conn = conn_db()
+    cursor = conn.cursor()
 
     cursor.execute(create_db_weapons)
     cursor.execute(create_db_hulls)

@@ -1,18 +1,14 @@
 ﻿import random
 import sqlite3
 
-from db.init_db import cursor, conn
+from config import WEAPONS_COUNT, HULLS_COUNT, ENGINES_COUNT, SHIPS_COUNT
+from db.conn_db import conn_db
 
 
 def get_random_integer():
     """как сказано в задании, все интеджеры заполняются случайным числом от 1 до 20"""
     return random.randint(1, 20)
 
-
-WEAPONS_COUNT = 20
-HULLS_COUNT = 5
-ENGINES_COUNT = 6
-SHIPS_COUNT = 200
 
 weapons_data = [
     (
@@ -57,23 +53,14 @@ ships_data = [
 
 
 def seed_db():
+    conn = conn_db()
+    cursor = conn.cursor()
+
     try:
-        cursor.executemany(
-            "INSERT INTO weapons VALUES (?, ?, ?, ?, ?, ?)",
-            weapons_data
-        )
-
-        cursor.executemany(
-            "INSERT INTO hulls VALUES (?, ?, ?, ?)",
-            hulls_data)
-
-        cursor.executemany(
-            "INSERT INTO engines VALUES (?, ?, ?)",
-            engines_data)
-
-        cursor.executemany(
-            "INSERT INTO ships VALUES (?, ?, ?, ?)",
-            ships_data)
+        cursor.executemany("INSERT INTO weapons VALUES (?, ?, ?, ?, ?, ?)", weapons_data)
+        cursor.executemany("INSERT INTO hulls VALUES (?, ?, ?, ?)", hulls_data)
+        cursor.executemany("INSERT INTO engines VALUES (?, ?, ?)", engines_data)
+        cursor.executemany("INSERT INTO ships VALUES (?, ?, ?, ?)", ships_data)
 
         conn.commit()
         # logging.info("Database populated successfully.")
