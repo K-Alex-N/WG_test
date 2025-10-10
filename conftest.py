@@ -1,4 +1,5 @@
-﻿import random
+﻿from dataclasses import dataclass
+import random
 
 import pytest
 
@@ -7,6 +8,7 @@ from db.conn_db import conn_db
 from db.copy_db import copy_db
 from db.seed_db import seed_db
 from db.create_db import create_db
+from db.utils import get_random_integer
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -23,34 +25,57 @@ def db():
 #     "engine": "engines",
 # }
 
+@dataclass
+class Component:
+    name: str
+    params: list[str]
+    db_name: str
+    max_component_count: int
+
+
+weapon = Component(
+    "weapon",
+    ["reload_speed", "rotational_speed", "diameter", "power_volley", "count"],
+    "weapons",
+    WEAPONS_COUNT
+)
+
+hull = Component(
+    "hull",
+    ["armor", "type", "capacity"],
+    "hulls",
+    HULLS_COUNT
+)
+
+engine = Component(
+    "engine",
+    ["power", "type"],
+    "engines",
+    ENGINES_COUNT
+)
 
 def get_random_component(component):
     max_for_component = {
-        "weapon": WEAPONS_COUNT,
-        "hull": HULLS_COUNT,
-        "engine": ENGINES_COUNT
+        "Weapon": WEAPONS_COUNT,
+        "Hull": HULLS_COUNT,
+        "Engine": ENGINES_COUNT
     }.get(component)
 
-    return f"{component.capitalize()}-{random.randint(1, max_for_component)}"
+    return f"{component}-{random.randint(1, max_for_component)}"
 
 
 def randomize_ships(cursor, conn):
     ships = cursor.execute("SELECT * FROM ships").fetchall()
 
     for ship_id, *data in ships:
-        # print()
-        # print(ship_id)
-        # print(*data)
-        component = random.choice(["weapon", "hull", "engine"])
+        component = random.choice(["Weapon", "Hull", "Engine"])
 
         new_component = get_random_component(component)
-        # print(new_component)
         sql = f"""
             UPDATE ships 
             SET {component} = "{new_component}"
             WHERE ship = "{ship_id}";
         """
-        # print(sql)
         cursor.execute(sql)
         conn.commit()
 
@@ -66,13 +91,27 @@ def randomize_ships(cursor, conn):
     #
     # можно валидацию через Пайдентик сделать
 
-    # def randomize_components():
-    #     # randomize hulls
-    #     # randomize hulls
-    #     # randomize hulls
-    #     pass
 
-    # @ pytest.fixture(scope='session')
+# def get_component_table(component) -> str:
+#     return component + "s"
+
+
+def randomize_components(cursor, conn):
+    # for component in [weapon, "hull", "engine"]:
+    for component in [weapon, hull, engine]:  # выбрать первый компонент
+        cursor.execute(f"SELECT * FROM {component.db_name}")
+        component_db_data = cursor.fetchall()
+
+        for component_id, _ in component_db_data:
+            param_to_change = random.choice(component.params)
+            new_value = get_random_integer()
+
+            cursor.execute(f"""
+                UPDATE {component.db_name}
+                SET {param_to_change} = ?
+                WHERE {component.name} = ?
+            """, (new_value, component_id))
+            conn.commit()
 
 
 @pytest.fixture(scope='session')
@@ -83,4 +122,4 @@ def changed_db():
         cursor = conn.cursor()
 
         randomize_ships(cursor, conn)
-        # randomize_components(cursor)
+        randomize_components(cursor, conn)

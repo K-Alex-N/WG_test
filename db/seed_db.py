@@ -3,12 +3,7 @@ import sqlite3
 
 from config import WEAPONS_COUNT, HULLS_COUNT, ENGINES_COUNT, SHIPS_COUNT
 from db.conn_db import conn_db
-
-
-def get_random_integer():
-    """как сказано в задании, все интеджеры заполняются случайным числом от 1 до 20"""
-    return random.randint(1, 20)
-
+from db.utils import get_random_integer
 
 weapons_data = [
     (
