@@ -102,7 +102,7 @@ def randomize_components(cursor, conn):
         cursor.execute(f"SELECT * FROM {component.db_name}")
         component_db_data = cursor.fetchall()
 
-        for component_id, _ in component_db_data:
+        for component_id, *_ in component_db_data:
             param_to_change = random.choice(component.params)
             new_value = get_random_integer()
 
@@ -114,7 +114,7 @@ def randomize_components(cursor, conn):
             conn.commit()
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='session', autouse=True)
 def changed_db():
     tmp_db_name = copy_db()
     # conn = conn_db(tmp_db_name)
