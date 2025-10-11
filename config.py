@@ -1,4 +1,3 @@
-
 DB_NAME = "WoW.db"
 TEMP_DB_NAME = "temp_" + DB_NAME
 

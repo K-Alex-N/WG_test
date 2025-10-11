@@ -1,8 +1,11 @@
-﻿import sqlite3
+import logging
+
 from contextlib import contextmanager
 from typing import Generator
 
 from config import DB_NAME
+
+import sqlite3
 
 
 @contextmanager
@@ -13,10 +16,11 @@ def conn_db(db_name: str = DB_NAME) -> Generator[sqlite3.Connection, None, None]
         conn.commit()
     except sqlite3.Error as e:
         conn.rollback()
-        # logging.exception(f"Database error in {db_name}: {e}")
+        logging.exception(f"Database error in {db_name}: {e}")
         raise
     finally:
         conn.close()
+
 
 @contextmanager
 def get_cursor(db_name: str = DB_NAME) -> Generator[sqlite3.Cursor, None, None]:

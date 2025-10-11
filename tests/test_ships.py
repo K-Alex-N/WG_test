@@ -1,4 +1,4 @@
-﻿import pytest
+import pytest
 
 from db.conn_db import get_cursor
 from config import TEMP_DB_NAME, COMPONENTS_LIST, DB_NAME
@@ -38,8 +38,10 @@ def get_changed_ship(ship_id: str) -> Ship:
 
 def compare_components_in_ship(comp: str, orig_ship: Ship, changed_ship: Ship) -> None:
     if orig_ship[comp] != changed_ship[comp]:
-        pytest.fail(f"{orig_ship.ship_id}, {comp}\n"
-                    f"\tExpected {orig_ship[comp]}, was {changed_ship[comp]}")
+        pytest.fail(
+            f"{orig_ship.ship_id}, {comp}\n"
+            f"\tExpected {orig_ship[comp]}, was {changed_ship[comp]}"
+        )
 
 
 def compare_params_in_component(orig_comp, changed_comp, ship_id: str) -> None:
@@ -48,17 +50,16 @@ def compare_params_in_component(orig_comp, changed_comp, ship_id: str) -> None:
 
     for param, value in orig_comp_dict.items():
         if value != changed_comp_dict[param]:
-            pytest.fail(f"{ship_id}, {changed_comp_dict["comp_id"]}\n"
-                        f"\t{param}: expected {value}, was {changed_comp_dict[param]}")
+            pytest.fail(
+                f"{ship_id}, {changed_comp_dict['comp_id']}\n"
+                f"\t{param}: expected {value}, was {changed_comp_dict[param]}"
+            )
 
 
 def get_comp(db: str, comp: str, comp_id: str) -> Weapon | Hull | Engine:
     comp_db = f"{comp}s"
     with get_cursor(db) as cursor:
-        cursor.execute(
-            f"SELECT * "
-            f"FROM {comp_db} "
-            f"WHERE {comp}=?", (comp_id,))
+        cursor.execute(f"SELECT * FROM {comp_db} WHERE {comp}=?", (comp_id,))
         row = cursor.fetchone()
 
     if not row:

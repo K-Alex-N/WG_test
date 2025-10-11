@@ -1,4 +1,4 @@
-﻿import shutil
+import shutil
 import os
 
 from config import TEMP_DB_NAME, DB_NAME
