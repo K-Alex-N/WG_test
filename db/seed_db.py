@@ -15,7 +15,7 @@ weapons_data = [
     )
     for i in range(WEAPONS_COUNT)
 ]
-
+# fmt: off
 hulls_data = [
     (
         f"Hull-{i + 1}",
@@ -34,7 +34,7 @@ engines_data = [
     )
     for i in range(ENGINES_COUNT)
 ]
-
+# fmt: on
 ships_data = [
     (
         f"Ship-{i + 1}",

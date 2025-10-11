@@ -25,6 +25,7 @@ class Component:
     max_component_count: int
 
 
+# fmt: off
 weapon = Component(
     "weapon",
     ["reload_speed", "rotational_speed", "diameter", "power_volley", "count"],
@@ -56,6 +57,8 @@ def get_random_component(component):
 
     return f"{component}-{random.randint(1, max_for_component)}"
 
+# fmt: on
+
 
 def get_all_ships(cursor):
     return cursor.execute("SELECT * FROM ships").fetchall()
@@ -67,7 +70,8 @@ def randomize_ships(cursor):
     for ship_id, *_ in ships:
         component = random.choice(COMPONENTS_LIST).capitalize()
         new_component = get_random_component(component)
-        cursor.execute(f"""
+        cursor.execute(
+            f"""
             UPDATE ships 
             SET {component} = ?
             WHERE ship = ? """,
