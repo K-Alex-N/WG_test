@@ -48,6 +48,5 @@ def create_db():
         cursor.execute(create_db_engines)
         cursor.execute(create_db_ships)
 
-        conn.commit()
 
     # logging.info("Databases created successfully.")

@@ -51,15 +51,9 @@ def seed_db():
     with conn_db() as conn:
         cursor = conn.cursor()
 
-        try:
-            cursor.executemany("INSERT INTO weapons VALUES (?, ?, ?, ?, ?, ?)", weapons_data)
-            cursor.executemany("INSERT INTO hulls VALUES (?, ?, ?, ?)", hulls_data)
-            cursor.executemany("INSERT INTO engines VALUES (?, ?, ?)", engines_data)
-            cursor.executemany("INSERT INTO ships VALUES (?, ?, ?, ?)", ships_data)
+        cursor.executemany("INSERT INTO weapons VALUES (?, ?, ?, ?, ?, ?)", weapons_data)
+        cursor.executemany("INSERT INTO hulls VALUES (?, ?, ?, ?)", hulls_data)
+        cursor.executemany("INSERT INTO engines VALUES (?, ?, ?)", engines_data)
+        cursor.executemany("INSERT INTO ships VALUES (?, ?, ?, ?)", ships_data)
 
-            conn.commit()
-            # logging.info("Database populated successfully.")
-
-        except sqlite3.Error as e:
-            conn.rollback()
-            # logging.info(f"Error: {e}")
+    # logging.info("Database populated successfully.")

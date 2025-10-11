@@ -4,10 +4,15 @@ import os
 from config import TEMP_DB_NAME, DB_NAME
 
 
-def copy_db() -> str:
-    if os.path.exists(TEMP_DB_NAME):
-        os.remove(TEMP_DB_NAME)
+def drop_db_if_exists(db_name: str) -> None:
+    if os.path.exists(db_name):
+        os.remove(db_name)
+
+
+def create_tmp_db_copy() -> None:
+    drop_db_if_exists(TEMP_DB_NAME)
     shutil.copy(DB_NAME, TEMP_DB_NAME)
-    return TEMP_DB_NAME
 
 
+def drop_tmp_db() -> None:
+    drop_db_if_exists(TEMP_DB_NAME)

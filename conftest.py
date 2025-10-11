@@ -3,9 +3,9 @@ import random
 
 import pytest
 
-from config import WEAPONS_COUNT, HULLS_COUNT, ENGINES_COUNT
+from config import WEAPONS_COUNT, HULLS_COUNT, ENGINES_COUNT, TEMP_DB_NAME, COMPONENTS_LIST
 from db.conn_db import conn_db
-from db.copy_db import copy_db
+from db.copy_db import create_tmp_db_copy, drop_tmp_db
 from db.seed_db import seed_db
 from db.create_db import create_db
 from db.utils import get_random_integer
@@ -15,15 +15,7 @@ from db.utils import get_random_integer
 def db():
     create_db()
     seed_db()
-    yield
-    # drop_db
 
-
-# component_to_db = {
-#     "weapon": "weapons",
-#     "hull": "hulls",
-#     "engine": "engines",
-# }
 
 @dataclass
 class Component:
@@ -54,6 +46,7 @@ engine = Component(
     ENGINES_COUNT
 )
 
+
 def get_random_component(component):
     max_for_component = {
         "Weapon": WEAPONS_COUNT,
@@ -67,33 +60,16 @@ def get_random_component(component):
 def randomize_ships(cursor, conn):
     ships = cursor.execute("SELECT * FROM ships").fetchall()
 
-    for ship_id, *data in ships:
-        component = random.choice(["Weapon", "Hull", "Engine"])
+    for ship_id, *_ in ships:
+        component = random.choice(COMPONENTS_LIST).capitalize()
 
         new_component = get_random_component(component)
-        sql = f"""
-            UPDATE ships 
-            SET {component} = "{new_component}"
-            WHERE ship = "{ship_id}";
-        """
-        cursor.execute(sql)
+        cursor.execute(
+            f"UPDATE ships "
+            f"SET {component} = ?"
+            f"WHERE ship = ?",
+            (new_component, ship_id))
         conn.commit()
-
-    # component_db = component_to_db[component]
-    # cursor.execute(f"UPDATE {component_db} SET {param} = ? WHERE weapon = ?"
-    #
-    # pass
-
-    # pytest.fail(e) использовать
-
-    # может быть создать ДАТАКЛАССЫ или МОДЕЛЬКИ для каждой БД.
-    # ЧТОБЫ потом через точку доставать нужный параметр!!!!
-    #
-    # можно валидацию через Пайдентик сделать
-
-
-# def get_component_table(component) -> str:
-#     return component + "s"
 
 
 def randomize_components(cursor, conn):
@@ -115,11 +91,13 @@ def randomize_components(cursor, conn):
 
 
 @pytest.fixture(scope='session', autouse=True)
-def changed_db():
-    tmp_db_name = copy_db()
-    # conn = conn_db(tmp_db_name)
-    with conn_db(tmp_db_name) as conn:
+def tmp_changed_db():
+    create_tmp_db_copy()
+    with conn_db(TEMP_DB_NAME) as conn:
         cursor = conn.cursor()
 
         randomize_ships(cursor, conn)
         randomize_components(cursor, conn)
+
+    yield
+    # drop_tmp_db()
