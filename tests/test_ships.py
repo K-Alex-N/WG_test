@@ -1,11 +1,10 @@
-import pytest
-
-from db.conn_db import get_cursor
-from config import TEMP_DB_NAME, COMPONENTS_LIST, DB_NAME
-
 from dataclasses import asdict
 
-from db.models import Weapon, Hull, Engine, Ship
+import pytest
+
+from config import COMPONENTS_LIST, DB_NAME, TEMP_DB_NAME
+from db.conn_db import get_cursor
+from db.models import Engine, Hull, Ship, Weapon
 
 
 def get_component_object(comp: str, row: tuple) -> Weapon | Hull | Engine:

@@ -1,11 +1,9 @@
 import logging
-
+import sqlite3
 from contextlib import contextmanager
 from typing import Generator
 
 from config import DB_NAME
-
-import sqlite3
 
 
 @contextmanager

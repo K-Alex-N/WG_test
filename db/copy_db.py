@@ -1,7 +1,7 @@
-import shutil
 import os
+import shutil
 
-from config import TEMP_DB_NAME, DB_NAME
+from config import DB_NAME, TEMP_DB_NAME
 
 
 def drop_db_if_exists(db_name: str = DB_NAME) -> None:

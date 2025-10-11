@@ -1,13 +1,13 @@
-from dataclasses import dataclass
 import random
+from dataclasses import dataclass
 
 import pytest
 
-from config import WEAPONS_COUNT, HULLS_COUNT, ENGINES_COUNT, TEMP_DB_NAME, COMPONENTS_LIST
+from config import COMPONENTS_LIST, ENGINES_COUNT, HULLS_COUNT, TEMP_DB_NAME, WEAPONS_COUNT
 from db.conn_db import get_cursor
 from db.copy_db import create_tmp_db_copy, drop_tmp_db
-from db.seed_db import seed_db
 from db.create_db import create_db
+from db.seed_db import seed_db
 from db.utils import get_random_integer
 
 

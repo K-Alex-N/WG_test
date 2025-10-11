@@ -1,6 +1,6 @@
 import random
 
-from config import WEAPONS_COUNT, HULLS_COUNT, ENGINES_COUNT, SHIPS_COUNT
+from config import ENGINES_COUNT, HULLS_COUNT, SHIPS_COUNT, WEAPONS_COUNT
 from db.conn_db import get_cursor
 from db.utils import get_random_integer
 
