@@ -1,8 +1,7 @@
 ﻿import random
-import sqlite3
 
 from config import WEAPONS_COUNT, HULLS_COUNT, ENGINES_COUNT, SHIPS_COUNT
-from db.conn_db import conn_db
+from db.conn_db import get_cursor
 from db.utils import get_random_integer
 
 weapons_data = [
@@ -48,8 +47,7 @@ ships_data = [
 
 
 def seed_db():
-    with conn_db() as conn:
-        cursor = conn.cursor()
+    with get_cursor() as cursor:
 
         cursor.executemany("INSERT INTO weapons VALUES (?, ?, ?, ?, ?, ?)", weapons_data)
         cursor.executemany("INSERT INTO hulls VALUES (?, ?, ?, ?)", hulls_data)

@@ -1,4 +1,7 @@
-﻿from db.conn_db import conn_db
+﻿import os.path
+
+from config import DB_NAME
+from db.conn_db import get_cursor
 
 
 def create_db():
@@ -40,13 +43,13 @@ def create_db():
         );
         """
 
-    with conn_db() as conn:
-        cursor = conn.cursor()
+    if os.path.exists(DB_NAME):
+        os.remove(DB_NAME)
 
+    with get_cursor() as cursor:
         cursor.execute(create_db_weapons)
         cursor.execute(create_db_hulls)
         cursor.execute(create_db_engines)
         cursor.execute(create_db_ships)
-
 
     # logging.info("Databases created successfully.")

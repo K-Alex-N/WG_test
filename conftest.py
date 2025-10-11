@@ -4,7 +4,7 @@ import random
 import pytest
 
 from config import WEAPONS_COUNT, HULLS_COUNT, ENGINES_COUNT, TEMP_DB_NAME, COMPONENTS_LIST
-from db.conn_db import conn_db
+from db.conn_db import get_cursor
 from db.copy_db import create_tmp_db_copy, drop_tmp_db
 from db.seed_db import seed_db
 from db.create_db import create_db
@@ -57,7 +57,7 @@ def get_random_component(component):
     return f"{component}-{random.randint(1, max_for_component)}"
 
 
-def randomize_ships(cursor, conn):
+def randomize_ships(cursor):
     ships = cursor.execute("SELECT * FROM ships").fetchall()
 
     for ship_id, *_ in ships:
@@ -69,10 +69,9 @@ def randomize_ships(cursor, conn):
             f"SET {component} = ?"
             f"WHERE ship = ?",
             (new_component, ship_id))
-        conn.commit()
 
 
-def randomize_components(cursor, conn):
+def randomize_components(cursor):
     # for component in [weapon, "hull", "engine"]:
     for component in [weapon, hull, engine]:  # выбрать первый компонент
         cursor.execute(f"SELECT * FROM {component.db_name}")
@@ -87,17 +86,15 @@ def randomize_components(cursor, conn):
                 SET {param_to_change} = ?
                 WHERE {component.name} = ?
             """, (new_value, component_id))
-            conn.commit()
 
 
 @pytest.fixture(scope='session', autouse=True)
 def tmp_changed_db():
     create_tmp_db_copy()
-    with conn_db(TEMP_DB_NAME) as conn:
-        cursor = conn.cursor()
+    with get_cursor(TEMP_DB_NAME) as cursor:
 
-        randomize_ships(cursor, conn)
-        randomize_components(cursor, conn)
+        randomize_ships(cursor)
+        randomize_components(cursor)
 
     yield
     # drop_tmp_db()

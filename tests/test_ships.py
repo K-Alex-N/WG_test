@@ -1,6 +1,6 @@
 ﻿import pytest
 
-from db.conn_db import conn_db
+from db.conn_db import get_cursor
 from config import TEMP_DB_NAME, COMPONENTS_LIST, DB_NAME
 
 from dataclasses import asdict
@@ -19,8 +19,7 @@ def get_component_object(comp: str, row: tuple) -> Weapon | Hull | Engine:
 
 
 def get_ship(db: str, ship_id: str) -> Ship:
-    with conn_db(db) as conn:
-        cursor = conn.cursor()
+    with get_cursor(db) as cursor:
         cursor.execute("SELECT * FROM ships WHERE ship=?", (ship_id,))
         row = cursor.fetchone()
 
@@ -55,8 +54,7 @@ def compare_params_in_component(orig_comp, changed_comp, ship_id: str) -> None:
 
 def get_comp(db: str, comp: str, comp_id: str) -> Weapon | Hull | Engine:
     comp_db = f"{comp}s"
-    with conn_db(db) as conn:
-        cursor = conn.cursor()
+    with get_cursor(db) as cursor:
         cursor.execute(
             f"SELECT * "
             f"FROM {comp_db} "
@@ -84,10 +82,12 @@ def test_differences_in_databases(comp, i):
     # compare name of component in ship
     orig_ship = get_original_ship(ship_id)
     changed_ship = get_changed_ship(ship_id)
+
     compare_components_in_ship(comp, orig_ship, changed_ship)
 
     # compare values of parameters in component
     comp_id = orig_ship[comp]
     orig_comp = get_orig_comp(comp, comp_id)
     changed_comp = get_changed_comp(comp, comp_id)
+
     compare_params_in_component(orig_comp, changed_comp, ship_id)
