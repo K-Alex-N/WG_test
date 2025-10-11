@@ -1,4 +1,4 @@
-﻿from dataclasses import dataclass
+from dataclasses import dataclass
 import random
 
 import pytest
@@ -11,7 +11,7 @@ from db.create_db import create_db
 from db.utils import get_random_integer
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def db():
     create_db()
     seed_db()
@@ -71,7 +71,8 @@ def randomize_ships(cursor):
             UPDATE ships 
             SET {component} = ?
             WHERE ship = ? """,
-                       (new_component, ship_id))
+            (new_component, ship_id),
+        )
 
 
 def randomize_components(cursor):
@@ -83,14 +84,16 @@ def randomize_components(cursor):
             param_to_change = random.choice(component.params)
             new_value = get_random_integer()
 
-            cursor.execute(f"""
+            cursor.execute(
+                f"""
                 UPDATE {component.db_name}
                 SET {param_to_change} = ?
                 WHERE {component.name} = ? """,
-                           (new_value, component_id))
+                (new_value, component_id),
+            )
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def tmp_changed_db():
     create_tmp_db_copy()
     with get_cursor(TEMP_DB_NAME) as cursor:
