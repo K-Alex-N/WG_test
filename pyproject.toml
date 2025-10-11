@@ -1,6 +1,5 @@
 [tool.ruff]
 line-length = 120
-
 exclude = [
     ".git",
     "__pycache__",
@@ -9,4 +8,4 @@ exclude = [
 
 [tool.ruff.lint]
 select = ["E", "F", "B", "I"] # Включить дополнительные наборы правил (например, для isort, pyupgrade)
-#ignore = ["E501"]
+ignore = ["E501"]
