@@ -1,10 +1,10 @@
-﻿import os.path
-
-from config import DB_NAME
-from db.conn_db import get_cursor
+﻿from db.conn_db import get_cursor
+from db.copy_db import drop_db_if_exists
 
 
 def create_db():
+    drop_db_if_exists()
+
     create_db_weapons = """
         CREATE TABLE IF NOT EXISTS weapons (
             weapon TEXT PRIMARY KEY,
@@ -42,9 +42,6 @@ def create_db():
             FOREIGN KEY (engine) REFERENCES engines(engine)
         );
         """
-
-    if os.path.exists(DB_NAME):
-        os.remove(DB_NAME)
 
     with get_cursor() as cursor:
         cursor.execute(create_db_weapons)

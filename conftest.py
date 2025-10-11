@@ -57,23 +57,25 @@ def get_random_component(component):
     return f"{component}-{random.randint(1, max_for_component)}"
 
 
+def get_all_ships(cursor):
+    return cursor.execute("SELECT * FROM ships").fetchall()
+
+
 def randomize_ships(cursor):
-    ships = cursor.execute("SELECT * FROM ships").fetchall()
+    ships = get_all_ships(cursor)
 
     for ship_id, *_ in ships:
         component = random.choice(COMPONENTS_LIST).capitalize()
-
         new_component = get_random_component(component)
-        cursor.execute(
-            f"UPDATE ships "
-            f"SET {component} = ?"
-            f"WHERE ship = ?",
-            (new_component, ship_id))
+        cursor.execute(f"""
+            UPDATE ships 
+            SET {component} = ?
+            WHERE ship = ? """,
+                       (new_component, ship_id))
 
 
 def randomize_components(cursor):
-    # for component in [weapon, "hull", "engine"]:
-    for component in [weapon, hull, engine]:  # выбрать первый компонент
+    for component in [weapon, hull, engine]:  # todo
         cursor.execute(f"SELECT * FROM {component.db_name}")
         component_db_data = cursor.fetchall()
 
@@ -84,17 +86,16 @@ def randomize_components(cursor):
             cursor.execute(f"""
                 UPDATE {component.db_name}
                 SET {param_to_change} = ?
-                WHERE {component.name} = ?
-            """, (new_value, component_id))
+                WHERE {component.name} = ? """,
+                           (new_value, component_id))
 
 
 @pytest.fixture(scope='session', autouse=True)
 def tmp_changed_db():
     create_tmp_db_copy()
     with get_cursor(TEMP_DB_NAME) as cursor:
-
         randomize_ships(cursor)
         randomize_components(cursor)
 
     yield
-    # drop_tmp_db()
+    drop_tmp_db()
