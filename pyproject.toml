@@ -7,6 +7,5 @@ exclude = [
 ]
 
 [tool.ruff.lint]
-#select = ["E", "F", "B", "I"] # Включить дополнительные наборы правил (например, для isort, pyupgrade)
 select = ["E", "F", "I", "N", "UP", "B", "A"]
-ignore = ["E501"]
+#ignore = ["E501"]
