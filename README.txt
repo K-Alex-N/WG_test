@@ -1,4 +1,11 @@
-﻿reduction of variables
+﻿как запустить
+
+venv
+
+pip install pytest
+
+
+reduction of variables name (сокрашения в названиях переменных)
     comp = component
         component = it's a component of a ship. Example: weapon, hull and engine
     params

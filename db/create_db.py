@@ -1,5 +1,5 @@
 from db.conn_db import get_cursor
-from db.copy_db import drop_db_if_exists
+from db.tmp_db import drop_db_if_exists
 
 
 def create_db():

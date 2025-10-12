@@ -7,11 +7,11 @@ from db.conn_db import get_cursor
 from db.models import Component, Engine, Hull, Ship, Weapon
 
 
-def get_component_object(component: str, db_row: tuple) -> Component:
-    component_class = {"weapon": Weapon, "hull": Hull, "engine": Engine}[component]
-    if component_class is None:
-        raise ValueError(f"Unknown component: '{component}'")
-    return component_class(*db_row)
+def get_component_object(comp: str, db_row: tuple) -> Component:
+    comp_class = {"weapon": Weapon, "hull": Hull, "engine": Engine}[comp]
+    if comp_class is None:
+        raise ValueError(f"Unknown component: '{comp}'")
+    return comp_class(*db_row)
 
 
 def get_ship(db: str, ship_id: str) -> Ship:
@@ -32,55 +32,49 @@ def get_changed_ship(ship_id: str) -> Ship:
     return get_ship(TEMP_DB_NAME, ship_id)
 
 
-def compare_components_in_ship(
-    component: str, orig_ship: Ship, changed_ship: Ship
-) -> None:
-    if orig_ship[component] != changed_ship[component]:
+def compare_components_in_ship(comp: str, orig_ship: Ship, changed_ship: Ship) -> None:
+    if orig_ship[comp] != changed_ship[comp]:
         pytest.fail(
-            f"{orig_ship.ship_id}, {component}\n"
-            f"\tExpected {orig_ship[component]}, was {changed_ship[component]}"
+            f"{orig_ship.ship_id}, {comp}\n"
+            f"\tExpected {orig_ship[comp]}, was {changed_ship[comp]}"
         )
 
 
-def compare_params_in_component(
-    orig_component, changed_component, ship_id: str
-) -> None:
-    orig_component_dict = asdict(orig_component)
-    changed_component_dict = asdict(changed_component)
+def compare_params_in_component(orig_comp, changed_comp, ship_id: str) -> None:
+    orig_comp_dict = asdict(orig_comp)
+    changed_comp_dict = asdict(changed_comp)
 
-    for param, value in orig_component_dict.items():
-        if value != changed_component_dict[param]:
+    for param, value in orig_comp_dict.items():
+        if value != changed_comp_dict[param]:
             pytest.fail(
-                f"{ship_id}, {changed_component_dict['comp_id']}\n"
-                f"\t{param}: expected {value}, was {changed_component_dict[param]}"
+                f"{ship_id}, {changed_comp_dict['comp_id']}\n"
+                f"\t{param}: expected {value}, was {changed_comp_dict[param]}"
             )
 
 
-def get_component(db: str, component: str, component_id: str) -> Component:
-    component_db = f"{component}s"
+def get_comp(db: str, comp: str, comp_id: str) -> Component:
+    comp_db = f"{comp}s"
     with get_cursor(db) as cursor:
-        cursor.execute(
-            f"SELECT * FROM {component_db} WHERE {component}=?", (component_id,)
-        )
+        cursor.execute(f"SELECT * FROM {comp_db} WHERE {comp}=?", (comp_id,))
         row = cursor.fetchone()
 
     if not row:
-        raise ValueError(f"Component not found: {component_id}")
-    return get_component_object(component, row)
+        raise ValueError(f"Component not found: {comp_id}")
+    return get_component_object(comp, row)
 
 
-def get_orig_component(component: str, component_id: str) -> Component:
-    return get_component(DB_NAME, component, component_id)
+def get_orig_comp(comp: str, comp_id: str) -> Component:
+    return get_comp(DB_NAME, comp, comp_id)
 
 
-def get_changed_component(component: str, component_id: str) -> Component:
-    return get_component(TEMP_DB_NAME, component, component_id)
+def get_changed_comp(comp: str, comp_id: str) -> Component:
+    return get_comp(TEMP_DB_NAME, comp, comp_id)
 
 
-@pytest.mark.parametrize("component", COMPONENTS_LIST)
+@pytest.mark.parametrize("comp", COMPONENTS_LIST)
 # @pytest.mark.parametrize("i", range(1, SHIPS_COUNT + 1))
 @pytest.mark.parametrize("i", range(1, 5))
-def test_differences_in_databases(component, i):
+def test_differences_in_databases(comp, i):
     """
     TASK
     Check all components in all ships (3 comps * 200 ships = 600 tests)
@@ -93,11 +87,11 @@ def test_differences_in_databases(component, i):
     orig_ship = get_original_ship(ship_id)
     changed_ship = get_changed_ship(ship_id)
 
-    compare_components_in_ship(component, orig_ship, changed_ship)
+    compare_components_in_ship(comp, orig_ship, changed_ship)
 
     # compare parameters in component
-    component_id = orig_ship[component]
-    orig_component = get_orig_component(component, component_id)
-    changed_component = get_changed_component(component, component_id)
+    comp_id = orig_ship[comp]
+    orig_comp = get_orig_comp(comp, comp_id)
+    changed_comp = get_changed_comp(comp, comp_id)
 
-    compare_params_in_component(orig_component, changed_component, ship_id)
+    compare_params_in_component(orig_comp, changed_comp, ship_id)

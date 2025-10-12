@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from config import WEAPONS_COUNT, HULLS_COUNT, ENGINES_COUNT
+
 
 @dataclass
 class Ship:
@@ -37,3 +39,35 @@ class Hull(Component):
 class Engine(Component):
     power: int
     type: int
+
+
+@dataclass
+class ComponentStructure:
+    name: str
+    params: list[str]
+    db_name: str
+    max_component_count: int
+
+
+# fmt: off
+weapon = ComponentStructure(
+    "weapon",
+    ["reload_speed", "rotational_speed", "diameter", "power_volley", "count"],
+    "weapons",
+    WEAPONS_COUNT
+)
+
+hull = ComponentStructure(
+    "hull",
+    ["armor", "type", "capacity"],
+    "hulls",
+    HULLS_COUNT
+)
+
+engine = ComponentStructure(
+    "engine",
+    ["power", "type"],
+    "engines",
+    ENGINES_COUNT
+)
+
