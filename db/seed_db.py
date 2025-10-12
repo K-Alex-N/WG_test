@@ -36,6 +36,7 @@ ships_data = [
 
 
 def seed_db():
+    # logger.info(f"Starting database seeding for {db_name}")
     with get_cursor() as cursor:
         cursor.executemany(
             "INSERT INTO weapons VALUES (?, ?, ?, ?, ?, ?)", weapons_data

@@ -8,7 +8,7 @@ from db.models import Component, Engine, Hull, Ship, Weapon
 
 
 def get_component_object(comp: str, db_row: tuple) -> Component:
-    comp_class = {"weapon": Weapon, "hull": Hull, "engine": Engine}[comp]
+    comp_class = {"weapon": Weapon, "hull": Hull, "engine": Engine}.get(comp)
     if comp_class is None:
         raise ValueError(f"Unknown component: '{comp}'")
     return comp_class(*db_row)
@@ -79,6 +79,7 @@ def test_differences_in_databases(comp: str, i: int) -> None:
     2. Check if the value of a component parameter has changed.
     """
     ship_id = f"Ship-{i}"
+    # logger.debug(f"Testing differences for {ship_id}, component: {comp}")
 
     # compare components in ship
     orig_ship = get_original_ship(ship_id)
