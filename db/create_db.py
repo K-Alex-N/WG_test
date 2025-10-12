@@ -2,7 +2,7 @@ from db.conn_db import get_cursor
 from db.tmp_db import drop_db_if_exists
 
 
-def create_db():
+def create_db() -> None:
     drop_db_if_exists()
 
     create_db_weapons = """

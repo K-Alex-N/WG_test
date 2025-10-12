@@ -1,4 +1,3 @@
-import logging
 import sqlite3
 from collections.abc import Generator
 from contextlib import contextmanager
@@ -12,9 +11,10 @@ def conn_db(db_name: str = DB_NAME) -> Generator[sqlite3.Connection, None, None]
     try:
         yield conn
         conn.commit()
-    except sqlite3.Error as e:
+    except sqlite3.Error:
         conn.rollback()
-        logging.exception(f"Database error in {db_name}: {e}")
+        # logging.exception(f"Database error in {db_name}")
+        # logger.exception(...)   <-- Использован именованный логгер 'logger'
         raise
     finally:
         conn.close()

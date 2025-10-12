@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from config import WEAPONS_COUNT, HULLS_COUNT, ENGINES_COUNT
+from config import ENGINES_COUNT, HULLS_COUNT, WEAPONS_COUNT
 
 
 @dataclass
@@ -16,6 +16,7 @@ class Ship:
 
 @dataclass
 class Component:
+    """parent class for components: weapon, hull, engine"""
     comp_id: str
 
 
@@ -43,6 +44,7 @@ class Engine(Component):
 
 @dataclass
 class ComponentStructure:
+    """ Useful information about components """
     name: str
     params: list[str]
     db_name: str
