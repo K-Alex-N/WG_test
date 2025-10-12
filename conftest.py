@@ -3,9 +3,15 @@ from dataclasses import dataclass
 
 import pytest
 
-from config import COMPONENTS_LIST, ENGINES_COUNT, HULLS_COUNT, TEMP_DB_NAME, WEAPONS_COUNT
+from config import (
+    COMPONENTS_LIST,
+    ENGINES_COUNT,
+    HULLS_COUNT,
+    TEMP_DB_NAME,
+    WEAPONS_COUNT,
+)
 from db.conn_db import get_cursor
-from db.copy_db import create_tmp_db_copy, drop_tmp_db
+from db.copy_db import create_tmp_db, drop_tmp_db
 from db.create_db import create_db
 from db.seed_db import seed_db
 from db.utils import get_random_integer
@@ -98,8 +104,8 @@ def randomize_components(cursor):
 
 
 @pytest.fixture(scope="session", autouse=True)
-def tmp_changed_db():
-    create_tmp_db_copy()
+def randomize_tmp_db():
+    create_tmp_db()
     with get_cursor(TEMP_DB_NAME) as cursor:
         randomize_ships(cursor)
         randomize_components(cursor)

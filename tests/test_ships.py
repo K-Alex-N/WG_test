@@ -37,7 +37,10 @@ def get_changed_ship(ship_id: str) -> Ship:
 
 def compare_components_in_ship(comp: str, orig_ship: Ship, changed_ship: Ship) -> None:
     if orig_ship[comp] != changed_ship[comp]:
-        pytest.fail(f"{orig_ship.ship_id}, {comp}\n\tExpected {orig_ship[comp]}, was {changed_ship[comp]}")
+        pytest.fail(
+            f"{orig_ship.ship_id}, {comp}\n"
+            f"\tExpected {orig_ship[comp]}, was {changed_ship[comp]}"
+        )
 
 
 def compare_params_in_component(orig_comp, changed_comp, ship_id: str) -> None:

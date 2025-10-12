@@ -48,7 +48,9 @@ ships_data = [
 
 def seed_db():
     with get_cursor() as cursor:
-        cursor.executemany("INSERT INTO weapons VALUES (?, ?, ?, ?, ?, ?)", weapons_data)
+        cursor.executemany(
+            "INSERT INTO weapons VALUES (?, ?, ?, ?, ?, ?)", weapons_data
+        )
         cursor.executemany("INSERT INTO hulls VALUES (?, ?, ?, ?)", hulls_data)
         cursor.executemany("INSERT INTO engines VALUES (?, ?, ?)", engines_data)
         cursor.executemany("INSERT INTO ships VALUES (?, ?, ?, ?)", ships_data)
