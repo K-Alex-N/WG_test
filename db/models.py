@@ -13,8 +13,12 @@ class Ship:
 
 
 @dataclass
-class Weapon:
+class Component:
     comp_id: str
+
+
+@dataclass
+class Weapon(Component):
     reload_speed: int
     rotational_speed: int
     diameter: int
@@ -23,15 +27,13 @@ class Weapon:
 
 
 @dataclass
-class Hull:
-    comp_id: str
+class Hull(Component):
     armor: int
     type: int
     capacity: int
 
 
 @dataclass
-class Engine:
-    comp_id: str
+class Engine(Component):
     power: int
     type: int

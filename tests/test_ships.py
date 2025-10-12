@@ -1,20 +1,18 @@
 from dataclasses import asdict
+from typing import Any
 
 import pytest
 
 from config import COMPONENTS_LIST, DB_NAME, TEMP_DB_NAME
 from db.conn_db import get_cursor
-from db.models import Engine, Hull, Ship, Weapon
+from db.models import Engine, Hull, Ship, Weapon, Component
 
 
-def get_component_object(comp: str, row: tuple) -> Weapon | Hull | Engine:
-    comp_map = {
-        "weapon": Weapon,
-        "hull": Hull,
-        "engine": Engine,
-    }
-    comp_class = comp_map[comp]
-    return comp_class(*row)
+def get_component_object(comp: str, db_row: tuple) -> Component:
+    comp_class = {"weapon": Weapon, "hull": Hull, "engine": Engine}[comp]
+    if comp_class is None:
+        raise ValueError(f"Unknown component: '{comp}'")
+    return comp_class(*db_row)
 
 
 def get_ship(db: str, ship_id: str) -> Ship:
@@ -75,17 +73,24 @@ def get_changed_comp(comp: str, comp_id: str) -> Weapon | Hull | Engine:
 
 
 @pytest.mark.parametrize("comp", COMPONENTS_LIST)
+# @pytest.mark.parametrize("i", range(1, SHIPS_COUNT + 1))
 @pytest.mark.parametrize("i", range(1, 5))
 def test_differences_in_databases(comp, i):
+    """
+    TASK
+    1. Check if the gun, hull, or engine of the ship has changed.
+    2. Check if the value of a component parameter does not match what it was before
+    the randomizer was run.
+    """
     ship_id = f"Ship-{i}"
 
-    # compare name of component in ship
+    # compare components in ship
     orig_ship = get_original_ship(ship_id)
     changed_ship = get_changed_ship(ship_id)
 
     compare_components_in_ship(comp, orig_ship, changed_ship)
 
-    # compare values of parameters in component
+    # compare parameters in component
     comp_id = orig_ship[comp]
     orig_comp = get_orig_comp(comp, comp_id)
     changed_comp = get_changed_comp(comp, comp_id)
