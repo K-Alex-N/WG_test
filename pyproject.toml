@@ -8,3 +8,8 @@ exclude = [
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "UP", "B", "A"]
+
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
