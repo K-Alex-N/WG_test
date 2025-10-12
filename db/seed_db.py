@@ -2,39 +2,28 @@ import random
 
 from config import ENGINES_COUNT, HULLS_COUNT, SHIPS_COUNT, WEAPONS_COUNT
 from db.conn_db import get_cursor
-from db.utils import get_random_integer
+from db.utils import get_int_from_1_to_20
+
+NUM_WEAPON_PARAMS = 5
+NUM_HULL_PARAMS = 3
+NUM_ENGINE_PARAMS = 2
+
 
 weapons_data = [
-    (
-        f"Weapon-{i + 1}",
-        get_random_integer(),
-        get_random_integer(),
-        get_random_integer(),
-        get_random_integer(),
-        get_random_integer(),
-    )
+    (f"Weapon-{i + 1}", *[get_int_from_1_to_20() for _ in range(NUM_WEAPON_PARAMS)])
     for i in range(WEAPONS_COUNT)
 ]
-# fmt: off
+
 hulls_data = [
-    (
-        f"Hull-{i + 1}",
-        get_random_integer(),
-        get_random_integer(),
-        get_random_integer()
-    )
+    (f"Hull-{i + 1}", *[get_int_from_1_to_20() for _ in range(NUM_HULL_PARAMS)])
     for i in range(HULLS_COUNT)
 ]
 
 engines_data = [
-    (
-        f"Engine-{i + 1}",
-        get_random_integer(),
-        get_random_integer()
-    )
+    (f"Engine-{i + 1}", *[get_int_from_1_to_20() for _ in range(NUM_ENGINE_PARAMS)])
     for i in range(ENGINES_COUNT)
 ]
-# fmt: on
+
 ships_data = [
     (
         f"Ship-{i + 1}",

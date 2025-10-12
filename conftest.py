@@ -14,7 +14,7 @@ from db.conn_db import get_cursor
 from db.copy_db import create_tmp_db, drop_tmp_db
 from db.create_db import create_db
 from db.seed_db import seed_db
-from db.utils import get_random_integer
+from db.utils import get_int_from_1_to_20
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -92,7 +92,7 @@ def randomize_components(cursor):
 
         for component_id, *_ in component_db_data:
             param_to_change = random.choice(component.params)
-            new_value = get_random_integer()
+            new_value = get_int_from_1_to_20()
 
             cursor.execute(
                 f"""
