@@ -90,12 +90,15 @@ def randomize_components(cursor: sqlite3.Cursor) -> None:
             randomize_component(cursor, component_id, comp_structure)
 
 
-@pytest.fixture(scope="session", autouse=True)
-def randomize_tmp_db():
+@pytest.fixture(scope="session")
+def tmp_db():
     create_tmp_db()
+    yield
+    drop_tmp_db()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def randomize_tmp_db(tmp_db):
     with get_cursor(TEMP_DB_NAME) as cursor:
         randomize_ships(cursor)
         randomize_components(cursor)
-
-    yield
-    drop_tmp_db()
