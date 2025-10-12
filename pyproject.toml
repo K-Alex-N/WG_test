@@ -4,6 +4,7 @@ exclude = [
     ".git",
     "__pycache__",
     ".venv",
+    "asd",
 ]
 
 [tool.ruff.lint]
