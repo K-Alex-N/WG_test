@@ -77,10 +77,7 @@ def randomize_ships(cursor):
         component = random.choice(COMPONENTS_LIST).capitalize()
         new_component = get_random_component(component)
         cursor.execute(
-            f"""
-            UPDATE ships 
-            SET {component} = ?
-            WHERE ship = ? """,
+            f"UPDATE ships SET {component} = ? WHERE ship = ?",
             (new_component, ship_id),
         )
 
