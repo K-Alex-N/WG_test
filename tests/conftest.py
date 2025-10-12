@@ -34,7 +34,7 @@ def get_max_for_component(component: str) -> int:
     }.get(component)
 
     if not max_for_component:
-        raise Exception(f"Unknown component '{component}'")
+        raise ValueError(f"Unknown component '{component}'")
 
     return max_for_component
 
@@ -55,10 +55,12 @@ def randomize_ship(cursor: sqlite3.Cursor, ship_id: str) -> None:
         f"UPDATE ships SET {component} = ? WHERE ship = ?",
         (new_component_id, ship_id),
     )
+    # logger.debug(f"Randomized {component} for ship {ship_id}: {new_component_id}")
 
 
 def randomize_ships(cursor: sqlite3.Cursor) -> None:
     ships = get_all_ships(cursor)
+    # logger.info(f"Randomizing {len(ships)} ships")
 
     for ship_id, *_ in ships:
         randomize_ship(cursor, ship_id)
@@ -80,11 +82,13 @@ def randomize_component(
         f"WHERE {comp_structure.name} = ? ",
         (new_value, component_id),
     )
+    # logger.debug(f"Randomized {param_to_change} for {component_id}: {new_value}")
 
 
 def randomize_components(cursor: sqlite3.Cursor) -> None:
     for comp_structure in COMPONENTS_WITH_STRUCTURE:
         components = get_all_components(cursor, comp_structure.db_name)
+        # logger.info(f"Randomizing {len(components)} {comp_structure.name} components")
 
         for component_id, *_ in components:
             randomize_component(cursor, component_id, comp_structure)
@@ -92,13 +96,30 @@ def randomize_components(cursor: sqlite3.Cursor) -> None:
 
 @pytest.fixture(scope="session")
 def tmp_db():
-    create_tmp_db()
-    yield
-    drop_tmp_db()
+    try:
+        # logger.info("Creating temporary database for testing")
+        create_tmp_db()
+        yield
+    finally:
+        # logger.info("Cleaning up temporary database")
+        drop_tmp_db()
 
 
 @pytest.fixture(scope="session", autouse=True)
 def randomize_tmp_db(tmp_db):
+    # logger.info("Randomizing temporary database")
     with get_cursor(TEMP_DB_NAME) as cursor:
         randomize_ships(cursor)
         randomize_components(cursor)
+    # logger.info("Temporary database randomization completed")
+
+# @pytest.fixture
+# def test_ship_ids() -> List[str]:
+#     """Get list of ship IDs for testing."""
+#     return [f"Ship-{i}" for i in range(1, TEST_SHIP_COUNT + 1)]
+#
+#
+# @pytest.fixture
+# def component_types() -> List[str]:
+#     """Get list of component types for testing."""
+#     return COMPONENTS_LIST.copy()
