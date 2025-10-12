@@ -3,4 +3,9 @@
     rev: v1.1.406
     hooks:
       - id: pyright
-        args: ["--exclude", "asd"]
+#        args: ["--exclude", "asd"]
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.4  # или актуальная версия
+    hooks:
+      - id: ruff
+#        args: ["--exclude", "asd"]
