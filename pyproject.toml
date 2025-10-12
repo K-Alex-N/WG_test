@@ -1,4 +1,4 @@
-﻿[tool.ruff]
+[tool.ruff]
 exclude = [
     ".git",
     "__pycache__",
