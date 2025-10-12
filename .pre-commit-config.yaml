@@ -3,4 +3,4 @@
     rev: v1.1.406
     hooks:
       - id: pyright
-        additional_dependencies: [pytest]
+#        additional_dependencies: [pytest]
