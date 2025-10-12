@@ -92,10 +92,9 @@ def randomize_components(cursor):
             new_value = get_int_from_1_to_20()
 
             cursor.execute(
-                f"""
-                UPDATE {component.db_name}
-                SET {param_to_change} = ?
-                WHERE {component.name} = ? """,
+                f"UPDATE {component.db_name} "
+                f"SET {param_to_change} = ? "
+                f"WHERE {component.name} = ? ",
                 (new_value, component_id),
             )
 

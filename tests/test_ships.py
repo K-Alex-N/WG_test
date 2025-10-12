@@ -51,7 +51,7 @@ def compare_params_in_component(
     for param, value in orig_component_dict.items():
         if value != changed_component_dict[param]:
             pytest.fail(
-                f"{ship_id}, {changed_component_dict['component_id']}\n"
+                f"{ship_id}, {changed_component_dict['comp_id']}\n"
                 f"\t{param}: expected {value}, was {changed_component_dict[param]}"
             )
 
@@ -83,9 +83,9 @@ def get_changed_component(component: str, component_id: str) -> Component:
 def test_differences_in_databases(component, i):
     """
     TASK
+    Check all components in all ships (3 comps * 200 ships = 600 tests)
     1. Check if the gun, hull, or engine of the ship has changed.
-    2. Check if the value of a component parameter does not match what it was before
-    the randomizer was run.
+    2. Check if the value of a component parameter has changed.
     """
     ship_id = f"Ship-{i}"
 
