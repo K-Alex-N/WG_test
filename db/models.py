@@ -17,6 +17,7 @@ class Ship:
 @dataclass
 class Component:
     """parent class for components: weapon, hull, engine"""
+
     comp_id: str
 
 
@@ -44,7 +45,8 @@ class Engine(Component):
 
 @dataclass
 class ComponentStructure:
-    """ Useful information about components """
+    """Useful information about components"""
+
     name: str
     params: list[str]
     db_name: str
@@ -72,4 +74,3 @@ engine = ComponentStructure(
     "engines",
     ENGINES_COUNT
 )
-

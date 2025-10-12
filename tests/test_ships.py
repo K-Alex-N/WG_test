@@ -75,8 +75,8 @@ def get_changed_comp(comp: str, comp_id: str) -> Component:
 # @pytest.mark.parametrize("i", range(1, SHIPS_COUNT + 1))
 @pytest.mark.parametrize("i", range(1, 5))
 def test_differences_in_databases(comp: str, i: int) -> None:
-    """ 1. Check if the gun, hull, or engine of the ship has changed.
-        2. Check if the value of a component parameter has changed.
+    """1. Check if the gun, hull, or engine of the ship has changed.
+    2. Check if the value of a component parameter has changed.
     """
     ship_id = f"Ship-{i}"
 
