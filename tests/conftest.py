@@ -26,7 +26,7 @@ def db() -> None:
     seed_db()
 
 
-def get_max_for_component(component: str) -> int:
+def get_component_count(component: str) -> int:
     max_for_component = {
         "weapon": WEAPONS_COUNT,
         "hull": HULLS_COUNT,
@@ -40,8 +40,8 @@ def get_max_for_component(component: str) -> int:
 
 
 def get_random_component_id(component: str) -> str:
-    max_for_component = get_max_for_component(component)
-    return f"{component.capitalize()}-{random.randint(1, max_for_component)}"
+    component_count = get_component_count(component)
+    return f"{component.capitalize()}-{random.randint(1, component_count)}"
 
 
 def get_all_ships(cursor: sqlite3.Cursor) -> list[tuple]:
@@ -66,8 +66,8 @@ def randomize_ships(cursor: sqlite3.Cursor) -> None:
         randomize_ship(cursor, ship_id)
 
 
-def get_all_components(cursor: sqlite3.Cursor, component_db: str) -> list[tuple]:
-    return cursor.execute(f"SELECT * FROM {component_db}").fetchall()
+def get_all_components(cursor: sqlite3.Cursor, component_table: str) -> list[tuple]:
+    return cursor.execute(f"SELECT * FROM {component_table}").fetchall()
 
 
 def randomize_component(
@@ -77,7 +77,7 @@ def randomize_component(
     new_value = get_rand_param_value()
 
     cursor.execute(
-        f"UPDATE {comp_structure.db_name} "
+        f"UPDATE {comp_structure.table_name} "
         f"SET {param_to_change} = ? "
         f"WHERE {comp_structure.name} = ? ",
         (new_value, component_id),
@@ -87,7 +87,7 @@ def randomize_component(
 
 def randomize_components(cursor: sqlite3.Cursor) -> None:
     for comp_structure in COMPONENTS_WITH_STRUCTURE:
-        components = get_all_components(cursor, comp_structure.db_name)
+        components = get_all_components(cursor, comp_structure.table_name)
         # logger.info(f"Randomizing {len(components)} {comp_structure.name} components")
 
         for component_id, *_ in components:

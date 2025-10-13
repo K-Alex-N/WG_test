@@ -141,7 +141,7 @@ def randomize_component(
     new_value = get_rand_param_value()
 
     cursor.execute(
-        f"UPDATE {comp_structure.db_name} "
+        f"UPDATE {comp_structure.table_name} "
         f"SET {param_to_change} = ? "
         f"WHERE {comp_structure.name} = ? ",
         (new_value, component_id),
@@ -157,7 +157,7 @@ def randomize_components(cursor: sqlite3.Cursor) -> None:
         cursor: Database cursor
     """
     for comp_structure in COMPONENTS_WITH_STRUCTURE:
-        components = get_all_components(cursor, comp_structure.db_name)
+        components = get_all_components(cursor, comp_structure.table_name)
         logger.info(f"Randomizing {len(components)} {comp_structure.name} components")
 
         for component_id, *_ in components:

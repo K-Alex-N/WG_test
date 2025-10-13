@@ -49,7 +49,7 @@ class ComponentStructure:
 
     name: str
     params: list[str]
-    db_name: str
+    table_name: str
     max_component_count: int
 
 

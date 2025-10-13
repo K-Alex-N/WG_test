@@ -7,11 +7,12 @@ from db.conn_db import get_cursor
 from db.models import Component, Engine, Hull, Ship, Weapon
 
 
-def get_component_object(comp: str, db_row: tuple) -> Component:
-    comp_class = {"weapon": Weapon, "hull": Hull, "engine": Engine}.get(comp)
+def get_component_object(comp: str, row: tuple) -> Component:
+    comp_map = {"weapon": Weapon, "hull": Hull, "engine": Engine}
+    comp_class = comp_map.get(comp)
     if comp_class is None:
         raise ValueError(f"Unknown component: '{comp}'")
-    return comp_class(*db_row)
+    return comp_class(*row)
 
 
 def get_ship(db: str, ship_id: str) -> Ship:
@@ -53,9 +54,9 @@ def compare_params_in_component(orig_comp, changed_comp, ship_id: str) -> None:
 
 
 def get_comp(db: str, comp: str, comp_id: str) -> Component:
-    comp_db = f"{comp}s"
+    comp_table = f"{comp}s"
     with get_cursor(db) as cursor:
-        cursor.execute(f"SELECT * FROM {comp_db} WHERE {comp}=?", (comp_id,))
+        cursor.execute(f"SELECT * FROM {comp_table} WHERE {comp}=?", (comp_id,))
         row = cursor.fetchone()
 
     if not row:

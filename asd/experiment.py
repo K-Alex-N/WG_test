@@ -10,3 +10,7 @@ class Comp(Enum):
 
 
 comp = switch_to_component_type_obj(comp)
+
+class Component:
+    type: str
+    component_count: int
