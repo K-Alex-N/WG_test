@@ -1,11 +1,7 @@
 from db.conn_db import get_cursor
 from db.tmp_db import drop_db_if_exists
 
-
-def create_db() -> None:
-    drop_db_if_exists()
-
-    weapons_table = """
+weapons = """
         CREATE TABLE IF NOT EXISTS weapons (
             weapon TEXT PRIMARY KEY,
             reload_speed INTEGER,
@@ -16,7 +12,7 @@ def create_db() -> None:
         );
     """
 
-    hulls_table = """
+hulls = """
         CREATE TABLE IF NOT EXISTS hulls (
             hull TEXT PRIMARY KEY,
             armor INTEGER,
@@ -25,7 +21,7 @@ def create_db() -> None:
         );
     """
 
-    engines_table = """
+engines = """
         CREATE TABLE IF NOT EXISTS engines (
             engine TEXT PRIMARY KEY,
             power INTEGER,
@@ -33,7 +29,7 @@ def create_db() -> None:
         );
     """
 
-    ships_table = """
+ships = """
         CREATE TABLE IF NOT EXISTS ships (
             ship TEXT PRIMARY KEY,
             weapon TEXT,
@@ -45,21 +41,13 @@ def create_db() -> None:
         );
     """
 
-    # создать общий класс для всех таблиц
-    # затем, код ниже пропустить церез цикл
+tables = [weapons, hulls, engines, ships]
 
-    # logger.info(f"Creating database: {db_name}")
-    # drop_db_if_exists(db_name)
+
+def create_db() -> None:
+    drop_db_if_exists()
 
     with get_cursor() as cursor:
-        # for table_sql in DatabaseSchema.get_all_tables():
-        #     logger.debug(f"Creating table with SQL: {table_sql.strip()}")
-        #     cursor.execute(table_sql)
-
-        cursor.execute(weapons_table)
-        cursor.execute(hulls_table)
-        cursor.execute(engines_table)
-        cursor.execute(ships_table)
-
-    # logger.info(f"Database {db_name} created successfully with all tables and indexes")
-    # logging.info("Databases created successfully.")
+        for table in tables:
+            cursor.execute(table)
+            # logger.info(f"Table {table} created successfully")

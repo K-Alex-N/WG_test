@@ -14,7 +14,7 @@ SHIPS_COUNT = 200
 # Component types
 COMPONENTS_LIST = ["weapon", "hull", "engine"]
 
-# Parameter ranges
+# Parameter value ranges
 MIN_PARAM_VALUE = 1
 MAX_PARAM_VALUE = 20
 

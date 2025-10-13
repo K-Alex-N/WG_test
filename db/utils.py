@@ -1,6 +1,8 @@
 import random
 
+from config import MIN_PARAM_VALUE, MAX_PARAM_VALUE
 
-def get_int_from_1_to_20() -> int:
+
+def get_rand_param_value() -> int:
     """Как сказано в задании, все параметры заполняются случайным числом от 1 до 20."""
-    return random.randint(1, 20)
+    return random.randint(MIN_PARAM_VALUE, MAX_PARAM_VALUE)

@@ -22,7 +22,7 @@ from db.logger import logger
 from db.models import ComponentStructure, engine, hull, weapon
 from db.seed_db import seed_db
 from db.tmp_db import create_tmp_db, drop_tmp_db, temp_db_exists
-from db.utils import get_int_from_1_to_20, get_random_component_id
+from db.utils import get_rand_param_value, get_random_component_id
 
 COMPONENTS_WITH_STRUCTURE = [weapon, hull, engine]
 
@@ -138,7 +138,7 @@ def randomize_component(
         comp_structure: Component structure definition
     """
     param_to_change = random.choice(comp_structure.params)
-    new_value = get_int_from_1_to_20()
+    new_value = get_rand_param_value()
 
     cursor.execute(
         f"UPDATE {comp_structure.db_name} "
