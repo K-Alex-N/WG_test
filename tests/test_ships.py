@@ -1,8 +1,9 @@
-from dataclasses import asdict, fields
+from dataclasses import asdict
 
 import pytest
 
 from config import COMPONENTS_LIST, DB_NAME, TEMP_DB_NAME
+from constants import COMPARE_COMPONENTS_FAIL_MESSAGE, COMPARE_PARAMS_FAIL_MESSAGE
 from db.conn_db import get_cursor
 from db.models import Component, Engine, Hull, Ship, Weapon
 
@@ -36,8 +37,12 @@ def get_changed_ship(ship_id: str) -> Ship:
 def compare_components_in_ship(comp: str, orig_ship: Ship, changed_ship: Ship) -> None:
     if orig_ship[comp] != changed_ship[comp]:
         pytest.fail(
-            f"{orig_ship.ship_id}, {comp}\n"
-            f"\tExpected {orig_ship[comp]}, was {changed_ship[comp]}"
+            COMPARE_COMPONENTS_FAIL_MESSAGE.format(
+                ship_id=orig_ship.ship_id,
+                comp=comp,
+                orig_comp=orig_ship[comp],
+                changed_comp=changed_ship[comp],
+            )
         )
 
 
@@ -45,8 +50,13 @@ def compare_params_in_component(orig_comp, changed_comp, ship_id: str) -> None:
     for param, value in asdict(orig_comp).items():
         if value != changed_comp[param]:
             pytest.fail(
-                f"{ship_id}, {changed_comp['comp_id']}\n"
-                f"\t{param}: expected {value}, was {changed_comp[param]}"
+                COMPARE_PARAMS_FAIL_MESSAGE.format(
+                    ship_id=ship_id,
+                    comp_id=changed_comp["comp_id"],
+                    param=param,
+                    orig_value=value,
+                    changed_value=changed_comp[param],
+                )
             )
 
 

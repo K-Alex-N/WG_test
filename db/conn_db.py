@@ -18,7 +18,7 @@ def conn_db(db_name: str = DB_NAME) -> Generator[sqlite3.Connection, None, None]
         conn.rollback()
         # logger.error(f"Database error in {db_path}, transaction rolled back: {e}")
         # raise DatabaseError(f"Database operation failed: {e}") from e
-    except Exception as e:
+    except Exception:
         conn.rollback()
         # logger.error(f"Unexpected error in {db_path}: {e}")
         # raise DatabaseError(f"Unexpected database error: {e}") from e
@@ -26,6 +26,7 @@ def conn_db(db_name: str = DB_NAME) -> Generator[sqlite3.Connection, None, None]
     finally:
         conn.close()
         # logger.debug(f"Closed connection to {db_path}")
+
 
 @contextmanager
 def get_cursor(db_name: str = DB_NAME) -> Generator[sqlite3.Cursor, None, None]:

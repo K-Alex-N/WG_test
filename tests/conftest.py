@@ -113,12 +113,7 @@ def randomize_tmp_db(tmp_db):
         randomize_components(cursor)
     # logger.info("Temporary database randomization completed")
 
-# @pytest.fixture
-# def test_ship_ids() -> List[str]:
-#     """Get list of ship IDs for testing."""
-#     return [f"Ship-{i}" for i in range(1, TEST_SHIP_COUNT + 1)]
-#
-#
+
 # @pytest.fixture
 # def component_types() -> List[str]:
 #     """Get list of component types for testing."""

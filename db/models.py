@@ -24,7 +24,6 @@ class Component:
         return getattr(self, item)
 
 
-
 @dataclass
 class Weapon(Component):
     reload_speed: int
