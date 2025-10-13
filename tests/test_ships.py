@@ -42,12 +42,7 @@ def compare_components_in_ship(comp: str, orig_ship: Ship, changed_ship: Ship) -
 
 
 def compare_params_in_component(orig_comp, changed_comp, ship_id: str) -> None:
-    orig_comp_dict = asdict(orig_comp)
-    changed_comp_dict = asdict(changed_comp)
-
-    for param, value in orig_comp_dict.items():
-    # for param, value in fields(orig_comp):
-        # if value != changed_comp_dict[param]:
+    for param, value in asdict(orig_comp).items():
         if value != changed_comp[param]:
             pytest.fail(
                 f"{ship_id}, {changed_comp['comp_id']}\n"
