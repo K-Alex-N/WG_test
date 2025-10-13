@@ -51,7 +51,7 @@ class Engine(Component):
 class ComponentStructure:
     """Useful information about components"""
 
-    name: str
+    type: str
     params: list[str]
     table_name: str
     max_component_count: int

@@ -7,7 +7,7 @@ from db.conn_db import get_cursor
 from db.models import Component, Engine, Hull, Ship, Weapon
 
 
-def get_component_object(comp: str, row: tuple) -> Component:
+def get_component_obj(comp: str, row: tuple) -> Component:
     comp_map = {"weapon": Weapon, "hull": Hull, "engine": Engine}
     comp_class = comp_map.get(comp)
     if comp_class is None:
@@ -58,7 +58,7 @@ def get_comp(db: str, comp: str, comp_id: str) -> Component:
 
     if not row:
         raise ValueError(f"Component not found: {comp_id}")
-    return get_component_object(comp, row)
+    return get_component_obj(comp, row)
 
 
 def get_orig_comp(comp: str, comp_id: str) -> Component:
