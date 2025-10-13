@@ -20,6 +20,10 @@ class Component:
 
     comp_id: str
 
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+
 
 @dataclass
 class Weapon(Component):

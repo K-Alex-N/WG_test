@@ -1,4 +1,4 @@
-from dataclasses import asdict
+from dataclasses import asdict, fields
 
 import pytest
 
@@ -46,10 +46,12 @@ def compare_params_in_component(orig_comp, changed_comp, ship_id: str) -> None:
     changed_comp_dict = asdict(changed_comp)
 
     for param, value in orig_comp_dict.items():
-        if value != changed_comp_dict[param]:
+    # for param, value in fields(orig_comp):
+        # if value != changed_comp_dict[param]:
+        if value != changed_comp[param]:
             pytest.fail(
-                f"{ship_id}, {changed_comp_dict['comp_id']}\n"
-                f"\t{param}: expected {value}, was {changed_comp_dict[param]}"
+                f"{ship_id}, {changed_comp['comp_id']}\n"
+                f"\t{param}: expected {value}, was {changed_comp[param]}"
             )
 
 
