@@ -1,4 +1,3 @@
-from typing import Type
 
 import pytest
 
@@ -48,7 +47,7 @@ class ComponentMapper:
     }
 
     @classmethod
-    def get_component_class(cls, component_type: str) -> Type[Component]:
+    def get_component_class(cls, component_type: str) -> type[Component]:
         comp_class = cls.COMPONENT_CLASSES.get(component_type)
         if comp_class is None:
             raise ValueError(UNKNOWN_COMPONENT_MESSAGE.format(comp=component_type))
@@ -68,7 +67,6 @@ class ComponentMapper:
 
 
 class ShipService:
-
     def __init__(self, repository: ShipRepository | None = None):
         self.repository = repository or ShipRepository()
 
@@ -79,7 +77,8 @@ class ShipService:
             if not row:
                 error_msg = SHIP_NOT_FOUND_MESSAGE.format(ship_id=ship_id)
                 logger.error(
-                    SERVICE_GET_SHIP_ERROR.format(ship_id=ship_id, error=error_msg))
+                    SERVICE_GET_SHIP_ERROR.format(ship_id=ship_id, error=error_msg)
+                )
                 raise ValueError(error_msg)
 
             ship = Ship(*row)
@@ -99,32 +98,32 @@ class ShipService:
         return self.repository.find_all(db_name)
 
     def update_ship_component(
-            self,
-            db_name: str,
-            ship_id: str,
-            component_type: str,
-            component_id: str
+        self, db_name: str, ship_id: str, component_type: str, component_id: str
     ) -> None:
-        logger.info(SERVICE_UPDATE_SHIP.format(
-            ship_id=ship_id,
-            component_type=component_type,
-            component_id=component_id
-        ))
+        logger.info(
+            SERVICE_UPDATE_SHIP.format(
+                ship_id=ship_id,
+                component_type=component_type,
+                component_id=component_id,
+            )
+        )
         self.repository.update_component(db_name, ship_id, component_type, component_id)
 
 
 class ComponentService:
-
     def __init__(self, repository: ComponentRepository | None = None):
         self.repository = repository or ComponentRepository()
 
-    def get_component(self, db_name: str, component_type: str,
-                      component_id: str) -> Component:
-        logger.info(SERVICE_GET_COMPONENT_START.format(
-            component_type=component_type,
-            component_id=component_id,
-            db_name=db_name
-        ))
+    def get_component(
+        self, db_name: str, component_type: str, component_id: str
+    ) -> Component:
+        logger.info(
+            SERVICE_GET_COMPONENT_START.format(
+                component_type=component_type,
+                component_id=component_id,
+                db_name=db_name,
+            )
+        )
         try:
             component_table = f"{component_type}s"
             row = self.repository.find_by_id(
@@ -132,58 +131,68 @@ class ComponentService:
             )
             if not row:
                 error_msg = COMPONENT_NOT_FOUND_MESSAGE.format(comp_id=component_id)
-                logger.error(SERVICE_GET_COMPONENT_ERROR.format(
-                    component_id=component_id,
-                    error=error_msg
-                ))
+                logger.error(
+                    SERVICE_GET_COMPONENT_ERROR.format(
+                        component_id=component_id, error=error_msg
+                    )
+                )
                 raise ValueError(error_msg)
 
-            component = ComponentMapper.create_comp_instance_from_row(component_type,
-                                                                      row)
+            component = ComponentMapper.create_comp_instance_from_row(
+                component_type, row
+            )
             logger.info(SERVICE_GET_COMPONENT_SUCCESS.format(component_id=component_id))
             return component
         except Exception as e:
-            logger.error(SERVICE_GET_COMPONENT_ERROR.format(
-                component_id=component_id,
-                error=str(e)
-            ))
+            logger.error(
+                SERVICE_GET_COMPONENT_ERROR.format(
+                    component_id=component_id, error=str(e)
+                )
+            )
             raise
 
-    def get_original_component(self, component_type: str,
-                               component_id: str) -> Component:
+    def get_original_component(
+        self, component_type: str, component_id: str
+    ) -> Component:
         return self.get_component(DB_NAME, component_type, component_id)
 
-    def get_changed_component(self, component_type: str,
-                              component_id: str) -> Component:
+    def get_changed_component(
+        self, component_type: str, component_id: str
+    ) -> Component:
         return self.get_component(TEMP_DB_NAME, component_type, component_id)
 
     def get_all_components(self, db_name: str, component_table: str) -> list[tuple]:
         return self.repository.find_all(db_name, component_table)
 
     def update_component_parameter(
-            self,
-            db_name: str,
-            component_type: str,
-            component_id: str,
-            param_name: str,
-            param_value: int
+        self,
+        db_name: str,
+        component_type: str,
+        component_id: str,
+        param_name: str,
+        param_value: int,
     ) -> None:
-        logger.info(SERVICE_UPDATE_COMPONENT.format(
-            component_id=component_id,
-            param_name=param_name
-        ))
+        logger.info(
+            SERVICE_UPDATE_COMPONENT.format(
+                component_id=component_id, param_name=param_name
+            )
+        )
         component_table = f"{component_type}s"
         self.repository.update_parameter(
-            db_name, component_table, component_type, component_id, param_name,
-            param_value
+            db_name,
+            component_table,
+            component_type,
+            component_id,
+            param_name,
+            param_value,
         )
 
 
 class ComparisonService:
-
     @staticmethod
-    def compare_ship_components(component_type: str, original_ship: Ship,
-                                changed_ship: Ship) -> None:
+    def compare_ship_components(
+        component_type: str, original_ship: Ship, changed_ship: Ship
+    ) -> None:
         logger.debug(SERVICE_COMPARE_SHIPS_START.format(component_type=component_type))
 
         orig_comp_id = original_ship[component_type]
@@ -194,8 +203,9 @@ class ComparisonService:
                 SERVICE_COMPARE_SHIPS_DIFFER.format(
                     component_type=component_type,
                     orig=orig_comp_id,
-                    changed=changed_comp_id
-                ))
+                    changed=changed_comp_id,
+                )
+            )
             pytest.fail(
                 COMPARE_COMPONENTS_FAIL_MESSAGE.format(
                     ship_id=original_ship.ship_id,
@@ -205,28 +215,28 @@ class ComparisonService:
                 )
             )
         else:
-            logger.debug(SERVICE_COMPARE_SHIPS_MATCH.format(
-                component_type=component_type,
-                component_id=orig_comp_id
-            ))
+            logger.debug(
+                SERVICE_COMPARE_SHIPS_MATCH.format(
+                    component_type=component_type, component_id=orig_comp_id
+                )
+            )
 
     @staticmethod
     def compare_component_params(
-            original_component: Component,
-            changed_component: Component,
-            ship_id: str
+        original_component: Component, changed_component: Component, ship_id: str
     ) -> None:
-
         comp_id = changed_component["comp_id"]
         logger.debug(SERVICE_COMPARE_PARAMS_START.format(component_id=comp_id))
 
         for param, value in vars(original_component).items():
             if value != changed_component[param]:
-                logger.info(SERVICE_COMPARE_PARAMS_DIFFER.format(
-                    param=param,
-                    orig_value=value,
-                    changed_value=changed_component[param]
-                ))
+                logger.info(
+                    SERVICE_COMPARE_PARAMS_DIFFER.format(
+                        param=param,
+                        orig_value=value,
+                        changed_value=changed_component[param],
+                    )
+                )
                 pytest.fail(
                     COMPARE_PARAMS_FAIL_MESSAGE.format(
                         ship_id=ship_id,

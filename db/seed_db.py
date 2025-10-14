@@ -1,7 +1,7 @@
 import random
 
 from config import ENGINES_COUNT, HULLS_COUNT, SHIPS_COUNT, WEAPONS_COUNT
-from constants import DB_SEEDING_START, DB_POPULATED_SUCCESSFULLY
+from constants import DB_POPULATED_SUCCESSFULLY, DB_SEEDING_START
 from db.conn_db import get_cursor
 from db.logger import logger
 from db.utils import get_rand_param_value

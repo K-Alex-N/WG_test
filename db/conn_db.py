@@ -3,8 +3,13 @@ from collections.abc import Generator
 from contextlib import contextmanager
 
 from config import DB_NAME
-from constants import CONNECTING_TO_DB, DB_ERROR, UNEXPECTED_ERROR, CLOSED_CONNECTION, \
-    CURSOR_ERROR
+from constants import (
+    CLOSED_CONNECTION,
+    CONNECTING_TO_DB,
+    CURSOR_ERROR,
+    DB_ERROR,
+    UNEXPECTED_ERROR,
+)
 from db.logger import logger
 
 

@@ -1,4 +1,3 @@
-
 import logging
 import sys
 from pathlib import Path
@@ -7,10 +6,10 @@ from config import LOG_FILE
 
 
 def setup_logger(
-        name: str = "WG",
-        level: int = logging.INFO,
-        log_file: str | None = None,
-        console_output: bool = False,
+    name: str = "WG",
+    level: int = logging.INFO,
+    log_file: str | None = None,
+    console_output: bool = False,
 ) -> logging.Logger:
     logger = logging.getLogger(name)
     logger.setLevel(level)
@@ -40,4 +39,4 @@ def setup_logger(
     return logger
 
 
-logger = setup_logger(log_file=LOG_FILE)
+logger = setup_logger(log_file=str(LOG_FILE))

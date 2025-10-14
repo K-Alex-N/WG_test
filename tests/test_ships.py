@@ -3,7 +3,7 @@ import pytest
 from config import COMPONENTS, SHIPS_COUNT
 from constants import COMPARE_COMPONENTS_IN_SHIP, COMPARE_PARAMS_IN_COMPONENT
 from db.logger import logger
-from tests.services import ship_service, comparison_service, component_service
+from tests.services import comparison_service, component_service, ship_service
 
 
 @pytest.mark.parametrize("component_type", COMPONENTS)
@@ -19,17 +19,20 @@ def test_differences_in_databases(component_type, i: int, randomize_tmp_db) -> N
 
     original_ship = ship_service.get_original_ship(ship_id)
     changed_ship = ship_service.get_changed_ship(ship_id)
-    comparison_service.compare_ship_components(component_type, original_ship,
-                                               changed_ship)
+    comparison_service.compare_ship_components(
+        component_type, original_ship, changed_ship
+    )
 
     # Compare parameters in component
     logger.debug(COMPARE_PARAMS_IN_COMPONENT.format(component_type=component_type))
 
     component_id = original_ship[component_type]
-    original_component = component_service.get_original_component(component_type,
-                                                                  component_id)
-    changed_component = component_service.get_changed_component(component_type,
-                                                                component_id)
-    comparison_service.compare_component_params(original_component,
-                                                changed_component,
-                                                ship_id)
+    original_component = component_service.get_original_component(
+        component_type, component_id
+    )
+    changed_component = component_service.get_changed_component(
+        component_type, component_id
+    )
+    comparison_service.compare_component_params(
+        original_component, changed_component, ship_id
+    )
