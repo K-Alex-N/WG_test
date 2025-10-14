@@ -1,7 +1,7 @@
 ﻿как запустить?
+    виртуальное окружение запустить
 
-venv
-
-pip install pytest
+    pip install pytest
+    pytest
 
 
