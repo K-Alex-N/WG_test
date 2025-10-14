@@ -7,8 +7,7 @@ from tests.services import ship_service, comparison_service, component_service
 
 
 @pytest.mark.parametrize("component_type", COMPONENTS)
-# @pytest.mark.parametrize("i", range(1, SHIPS_COUNT + 1))
-@pytest.mark.parametrize("i", range(1, 5))
+@pytest.mark.parametrize("i", range(1, SHIPS_COUNT + 1))
 def test_differences_in_databases(component_type, i: int, randomize_tmp_db) -> None:
     """1. Check if the gun, hull, or engine of the ship has changed.
     2. Check if the value of a component parameter has changed.
