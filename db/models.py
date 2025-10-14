@@ -16,7 +16,6 @@ class Ship:
 
 @dataclass
 class Component:
-
     comp_id: str
 
     def __getitem__(self, item):

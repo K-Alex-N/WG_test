@@ -1,4 +1,4 @@
-from typing import Optional
+
 
 from constants import (
     REPO_COMPONENT_FIND_ALL,
@@ -134,3 +134,4 @@ class ComponentRepository:
             )
 
         logger.debug(REPO_COMPONENT_UPDATE_SUCCESS.format(component_id=component_id))
+
