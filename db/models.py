@@ -54,7 +54,6 @@ class ComponentStructure:
     max_component_count: int
 
 
-# fmt: off
 weapon = ComponentStructure(
     "weapon",
     ["reload_speed", "rotational_speed", "diameter", "power_volley", "count"],
