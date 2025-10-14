@@ -16,7 +16,6 @@ class Ship:
 
 @dataclass
 class Component:
-    """parent class for components: weapon, hull, engine"""
 
     comp_id: str
 

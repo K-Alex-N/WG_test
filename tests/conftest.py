@@ -1,97 +1,109 @@
 import random
-import sqlite3
 
 import pytest
 
 from config import (
     COMPONENTS_LIST,
-    ENGINES_COUNT,
-    HULLS_COUNT,
     TEMP_DB_NAME,
-    WEAPONS_COUNT,
 )
-from db.conn_db import get_cursor
+from constants import TEST_RANDOMIZE_SHIP_START, TEST_RANDOMIZE_SHIP_COMPLETE, \
+    TEST_RANDOMIZE_ALL_SHIPS, TEST_RANDOMIZE_COMPONENT_START, \
+    TEST_RANDOMIZE_COMPONENT_COMPLETE, TEST_RANDOMIZE_ALL_COMPONENTS
 from db.create_db import create_db
+from db.logger import logger
 from db.models import ComponentStructure, engine, hull, weapon
 from db.seed_db import seed_db
 from db.tmp_db import create_tmp_db, drop_tmp_db
 from db.utils import get_rand_param_value
+from tests.services import ShipService, ComponentService, ComponentMapper
 
 COMPONENTS_WITH_STRUCTURE = [weapon, hull, engine]
+
+ship_service = ShipService()
+component_service = ComponentService()
 
 
 @pytest.fixture(scope="session", autouse=True)
 def db() -> None:
+    """Set up the main database for testing."""
     create_db()
     seed_db()
 
 
-def get_component_count(component: str) -> int:
-    max_for_component = {
-        "weapon": WEAPONS_COUNT,
-        "hull": HULLS_COUNT,
-        "engine": ENGINES_COUNT,
-    }.get(component)
-
-    if not max_for_component:
-        raise ValueError(f"Unknown component '{component}'")
-
-    return max_for_component
-
-
 def get_random_component_id(component: str) -> str:
-    component_count = get_component_count(component)
+    component_count = ComponentMapper.get_component_count(component)
     return f"{component.capitalize()}-{random.randint(1, component_count)}"
 
 
-def get_all_ships(cursor: sqlite3.Cursor) -> list[tuple]:
-    return cursor.execute("SELECT * FROM ships").fetchall()
-
-
-def randomize_ship(cursor: sqlite3.Cursor, ship_id: str) -> None:
+def randomize_ship(ship_id: str) -> None:
+    logger.debug(TEST_RANDOMIZE_SHIP_START.format(ship_id=ship_id))
     component = random.choice(COMPONENTS_LIST)
     new_component_id = get_random_component_id(component)
-    cursor.execute(
-        f"UPDATE ships SET {component} = ? WHERE ship = ?",
-        (new_component_id, ship_id),
-    )
-    # logger.debug(f"Randomized {component} for ship {ship_id}: {new_component_id}")
+    ship_service.update_ship_component(TEMP_DB_NAME, ship_id, component,
+                                       new_component_id)
+    logger.debug(TEST_RANDOMIZE_SHIP_COMPLETE.format(
+        ship_id=ship_id,
+        component=component,
+        component_id=new_component_id
+    ))
 
 
-def randomize_ships(cursor: sqlite3.Cursor) -> None:
-    ships = get_all_ships(cursor)
-    # logger.info(f"Randomizing {len(ships)} ships")
+def randomize_ships() -> None:
+    ships = ship_service.get_all_ships(TEMP_DB_NAME)
+    logger.info(TEST_RANDOMIZE_ALL_SHIPS.format(count=len(ships)))
 
     for ship_id, *_ in ships:
-        randomize_ship(cursor, ship_id)
+        randomize_ship(ship_id)
 
 
-def get_all_components(cursor: sqlite3.Cursor, component_table: str) -> list[tuple]:
-    return cursor.execute(f"SELECT * FROM {component_table}").fetchall()
+def randomize_component(component_id: str, comp_structure: ComponentStructure) -> None:
+    """
+    Randomize one parameter of a component.
 
+    Uses service layer to update component data.
 
-def randomize_component(
-    cursor: sqlite3.Cursor, component_id: str, comp_structure: ComponentStructure
-) -> None:
+    Args:
+        component_id: Component identifier
+        comp_structure: Component structure metadata
+    """
+    logger.debug(TEST_RANDOMIZE_COMPONENT_START.format(component_id=component_id))
     param_to_change = random.choice(comp_structure.params)
     new_value = get_rand_param_value()
 
-    cursor.execute(
-        f"UPDATE {comp_structure.table_name} "
-        f"SET {param_to_change} = ? "
-        f"WHERE {comp_structure.type} = ? ",
-        (new_value, component_id),
+    component_service.update_component_parameter(
+        TEMP_DB_NAME,
+        comp_structure.type,
+        component_id,
+        param_to_change,
+        new_value
     )
-    # logger.debug(f"Randomized {param_to_change} for {component_id}: {new_value}")
+
+    logger.debug(TEST_RANDOMIZE_COMPONENT_COMPLETE.format(
+        component_id=component_id,
+        param=param_to_change,
+        value=new_value
+    ))
 
 
-def randomize_components(cursor: sqlite3.Cursor) -> None:
+def randomize_components() -> None:
+    """
+    Randomize all components in the temporary database.
+
+    Uses service layer to retrieve and update component data.
+    """
     for comp_structure in COMPONENTS_WITH_STRUCTURE:
-        components = get_all_components(cursor, comp_structure.table_name)
-        # logger.info(f"Randomizing {len(components)} {comp_structure.type} components")
+        components = component_service.get_all_components(
+            TEMP_DB_NAME,
+            comp_structure.table_name
+        )
+
+        logger.info(TEST_RANDOMIZE_ALL_COMPONENTS.format(
+            count=len(components),
+            component_type=comp_structure.type
+        ))
 
         for component_id, *_ in components:
-            randomize_component(cursor, component_id, comp_structure)
+            randomize_component(component_id, comp_structure)
 
 
 @pytest.fixture(scope="session")
@@ -108,9 +120,8 @@ def tmp_db():
 @pytest.fixture(scope="session", autouse=True)
 def randomize_tmp_db(tmp_db):
     # logger.info("Randomizing temporary database")
-    with get_cursor(TEMP_DB_NAME) as cursor:
-        randomize_ships(cursor)
-        randomize_components(cursor)
+    randomize_ships()
+    randomize_components()
     # logger.info("Temporary database randomization completed")
 
 

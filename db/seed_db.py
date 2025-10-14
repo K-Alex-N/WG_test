@@ -1,7 +1,9 @@
 import random
 
 from config import ENGINES_COUNT, HULLS_COUNT, SHIPS_COUNT, WEAPONS_COUNT
+from constants import DB_SEEDING_START, DB_POPULATED_SUCCESSFULLY
 from db.conn_db import get_cursor
+from db.logger import logger
 from db.utils import get_rand_param_value
 
 NUM_WEAPON_PARAMS = 5
@@ -36,7 +38,7 @@ ships_data = [
 
 
 def seed_db():
-    # logger.info(f"Starting database seeding for {db_name}")
+    logger.info(DB_SEEDING_START)
     with get_cursor() as cursor:
         cursor.executemany(
             "INSERT INTO weapons VALUES (?, ?, ?, ?, ?, ?)", weapons_data
@@ -45,4 +47,4 @@ def seed_db():
         cursor.executemany("INSERT INTO engines VALUES (?, ?, ?)", engines_data)
         cursor.executemany("INSERT INTO ships VALUES (?, ?, ?, ?)", ships_data)
 
-    # logging.info("Database populated successfully.")
+    logger.info(DB_POPULATED_SUCCESSFULLY)
