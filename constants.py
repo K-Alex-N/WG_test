@@ -12,6 +12,11 @@ UNKNOWN_COMPONENT_MESSAGE = "Unknown component: '{comp}'"
 SHIP_NOT_FOUND_MESSAGE = "Ship not found: {ship_id}"
 COMPONENT_NOT_FOUND_MESSAGE = "Component not found: {comp_id}"
 
+# DB errors
+DB_OPERATION_FAILED = "Database operation failed: {e}"
+UNEXPECTED_DB_ERROR = "Unexpected database error: {e}"
+CURSOR_OPERATION_FAILED = "Cursor operation failed: {e}"
+
 # BD logging messages
 CONNECTING_TO_DB = "Connecting to database: {db_name}"
 DB_ERROR = "Database error in {db_name}, transaction rolled back: {e}"

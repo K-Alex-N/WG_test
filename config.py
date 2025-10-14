@@ -10,12 +10,12 @@ HULLS_COUNT = 5
 ENGINES_COUNT = 6
 SHIPS_COUNT = 200
 
-# Component types
-COMPONENTS = ["weapon", "hull", "engine"]
-
 # Parameter value ranges
 MIN_PARAM_VALUE = 1
 MAX_PARAM_VALUE = 20
+
+# Component types
+COMPONENTS = ["weapon", "hull", "engine"]
 
 # paths
 PROJECT_ROOT = Path(__file__).parent

@@ -7,10 +7,17 @@ from constants import (
     CLOSED_CONNECTION,
     CONNECTING_TO_DB,
     CURSOR_ERROR,
+    CURSOR_OPERATION_FAILED,
     DB_ERROR,
+    DB_OPERATION_FAILED,
+    UNEXPECTED_DB_ERROR,
     UNEXPECTED_ERROR,
 )
 from db.logger import logger
+
+
+class DatabaseError(Exception):
+    pass
 
 
 @contextmanager
@@ -23,12 +30,11 @@ def conn_db(db_name: str = DB_NAME) -> Generator[sqlite3.Connection, None, None]
     except sqlite3.Error as e:
         conn.rollback()
         logger.error(DB_ERROR.format(db_name=db_name, e=e))
-        # raise DatabaseError(f"Database operation failed: {e}") from e
+        raise DatabaseError(DB_OPERATION_FAILED.format(e=e)) from e
     except Exception as e:
         conn.rollback()
         logger.error(UNEXPECTED_ERROR.format(db_name=db_name, e=e))
-        # raise DatabaseError(f"Unexpected database error: {e}") from e
-        raise
+        raise DatabaseError(UNEXPECTED_DB_ERROR.format(e=e)) from e
     finally:
         conn.close()
         logger.debug(CLOSED_CONNECTION.format(db_name=db_name))
@@ -42,6 +48,6 @@ def get_cursor(db_name: str = DB_NAME) -> Generator[sqlite3.Cursor, None, None]:
             yield cursor
         except sqlite3.Error as e:
             logger.error(CURSOR_ERROR.format(db_name=db_name, e=e))
-            # raise DatabaseError(f"Cursor operation failed: {e}") from e
+            raise DatabaseError(CURSOR_OPERATION_FAILED.format(e=e)) from e
         finally:
             cursor.close()
