@@ -1,3 +1,5 @@
+from dataclasses import fields
+
 import pytest
 
 from config import (
@@ -227,7 +229,10 @@ class ComparisonService:
         comp_id = changed_component["comp_id"]
         logger.debug(SERVICE_COMPARE_PARAMS_START.format(component_id=comp_id))
 
-        for param, value in vars(original_component).items():
+        for field in fields(original_component):
+            param = field.name
+            value = getattr(original_component, field.name)
+
             if value != changed_component[param]:
                 logger.info(
                     SERVICE_COMPARE_PARAMS_DIFFER.format(

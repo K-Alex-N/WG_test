@@ -14,7 +14,7 @@ class Ship:
         return getattr(self, item)
 
 
-@dataclass
+@dataclass(slots=True)
 class Component:
     comp_id: str
 
@@ -22,7 +22,7 @@ class Component:
         return getattr(self, item)
 
 
-@dataclass
+@dataclass(slots=True)
 class Weapon(Component):
     reload_speed: int
     rotational_speed: int
@@ -31,20 +31,20 @@ class Weapon(Component):
     count: int
 
 
-@dataclass
+@dataclass(slots=True)
 class Hull(Component):
     armor: int
     type: int
     capacity: int
 
 
-@dataclass
+@dataclass(slots=True)
 class Engine(Component):
     power: int
     type: int
 
 
-@dataclass
+@dataclass(frozen=True)
 class ComponentStructure:
     """Useful information about components"""
 
@@ -58,19 +58,9 @@ weapon = ComponentStructure(
     "weapon",
     ["reload_speed", "rotational_speed", "diameter", "power_volley", "count"],
     "weapons",
-    WEAPONS_COUNT
+    WEAPONS_COUNT,
 )
 
-hull = ComponentStructure(
-    "hull",
-    ["armor", "type", "capacity"],
-    "hulls",
-    HULLS_COUNT
-)
+hull = ComponentStructure("hull", ["armor", "type", "capacity"], "hulls", HULLS_COUNT)
 
-engine = ComponentStructure(
-    "engine",
-    ["power", "type"],
-    "engines",
-    ENGINES_COUNT
-)
+engine = ComponentStructure("engine", ["power", "type"], "engines", ENGINES_COUNT)

@@ -3,7 +3,7 @@ from enum import Enum
 from constants import TABLE_CREATED
 from db.conn_db import get_cursor
 from db.logger import logger
-from db.tmp_db import drop_db_if_exists
+from db.utils import drop_db_if_exists
 
 
 class Tables(Enum):
