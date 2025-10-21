@@ -68,8 +68,8 @@ class ComponentMapper:
 
 
 class ShipService:
-    def __init__(self, repository: ShipRepository | None = None):
-        self.repository = repository or ShipRepository()
+    def __init__(self):
+        self.repository = ShipRepository()
 
     def get_ship(self, db_name: str, ship_id: str) -> Ship:
         logger.info(SERVICE_GET_SHIP_START.format(ship_id=ship_id, db_name=db_name))
@@ -112,8 +112,8 @@ class ShipService:
 
 
 class ComponentService:
-    def __init__(self, repository: ComponentRepository | None = None):
-        self.repository = repository or ComponentRepository()
+    def __init__(self):
+        self.repository = ComponentRepository()
 
     def get_component(
         self, db_name: str, component_type: str, component_id: str
